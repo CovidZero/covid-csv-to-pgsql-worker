@@ -24,7 +24,7 @@ export default class PgSql implements Storage {
         }
     }
 
-    async query(sql: string, data: Array<any>): Promise<any> {
+    async query(sql: string, data?: Array<any>): Promise<any> {
         await this.connect();
         return this.pgClient.query(sql, data);
     }
