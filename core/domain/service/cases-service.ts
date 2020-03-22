@@ -34,6 +34,10 @@ export default class CasesService implements ICasesService {
 
     async parseCitiesCases(): Promise<void> {
         const citiesCases = await this.getInfoFromRaw(this.config.csvs.cities);
+        if (citiesCases) {
+            await this.storage.query('TRUNCATE Public.city;');
+        }
+
         for (const covidCase of citiesCases) await this.storage.query(CITIES_SQL, covidCase);
     }
 

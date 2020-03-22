@@ -23,8 +23,7 @@ export const STATES_SQL: string =
         NOT EXISTS (SELECT 1 FROM upsert);`;
 
 export const CITIES_SQL =
-    `TRUNCATE Public.city;
-    WITH upsert AS (
+    `WITH upsert AS (
         UPDATE Public.city 
         SET
             totalcases = $4
