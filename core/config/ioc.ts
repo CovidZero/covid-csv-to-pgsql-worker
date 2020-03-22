@@ -7,6 +7,7 @@ import Storage from '../infrastructure/storage/storage.d';
 import axios from 'axios';
 
 import CasesService from '../domain/service/cases-service';
+import ICasesService from '../domain/service/cases-service.d';
 
 const initConfiguration = () => {
     container.register(CONFIG.pgSqlConfig, {
@@ -36,7 +37,7 @@ const initInfrastructure = () => {
 };
 
 const initDomain = () => {
-    container.register(DOMAIN.CasesService, { useClass: CasesService });
+    container.register<ICasesService>(DOMAIN.CasesService, { useClass: CasesService });
 };
 
 const initContainer = () => {
