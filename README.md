@@ -22,7 +22,7 @@ Para garantir o funcionamento da biblioteca `pg-native`, é necessário instalar
 1. Instale o Visual Studio C++ (successfully built with Express 2010).
 2. Instale o PostgreSQL (http://www.postgresql.org/download/windows/)
 3. Adicione o diretório `bin` da instalação do Postgres no path do sistema (i.e. C:\Program Files\PostgreSQL\9.3\bin).
-4. Confira se os arquivos libpq.dll e pg_config.exe estão nessa pasta.
+4. Confira se os arquivos `libpq.dll` e `pg_config.exe` estão nessa pasta.
 
 ## Estrutura
 
