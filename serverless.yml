@@ -1,0 +1,36 @@
+service:
+  name: sls-csv-to-pg-cases-br
+
+custom:
+  stage: ${opt:stage, 'dev'}
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+package:
+  exclude:
+    - tests/**
+    - doc/**
+
+provider:
+  name: aws
+  # vpc: ${file(./serverless.env.yml):${self:custom.stage}.VPC}
+  region: us-east-1
+  runtime: nodejs12.x
+  environment:
+    ENVIRONMENT: ${file(./serverless.env.yml):${self:custom.stage}.ENVIRONMENT}
+    PG_ENDPOINT: ${file(./serverless.env.yml):${self:custom.stage}.PG_ENDPOINT}
+    PG_PORT: ${file(./serverless.env.yml):${self:custom.stage}.PG_PORT}
+    PG_USER: ${file(./serverless.env.yml):${self:custom.stage}.PG_USER}
+    PG_PASSWORD: ${file(./serverless.env.yml):${self:custom.stage}.PG_PASSWORD}
+
+functions:
+  worker-cases-brazil-states:
+    handler: entry-point/lambda/worker.workerCasesBrazilStates
+    timeout: 30
+    memorySize: 128
+    events:
+      - schedule:
+          rate: cron(0/15 * * * ? *)
+          enable: ${file(./serverless.env.yml):${self:custom.stage}.ENABLE_CASES_BRAZIL_STATES}
