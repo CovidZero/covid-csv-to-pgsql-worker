@@ -8,6 +8,7 @@ import {
     CITIES_SQL,
     STATES_SQL,
     TOTAL_SQL,
+    TRUNCATE_CITIES_SQL,
 } from '../queries';
 
 @injectable()
@@ -35,24 +36,33 @@ export default class CasesService implements ICasesService {
     async parseCitiesCases(): Promise<void> {
         const citiesCases = await this.getInfoFromRaw(this.config.csvs.cities);
         if (citiesCases) {
-            await this.storage.query('TRUNCATE Public.city;');
+            await this.storage.query(TRUNCATE_CITIES_SQL);
         }
 
-        for (const covidCase of citiesCases) await this.storage.query(CITIES_SQL, covidCase);
+        for (const covidCase of citiesCases) {
+            covidCase[2] = covidCase[2].split('/')[0];
+            await this.storage.query(CITIES_SQL, covidCase);
+        }
     }
 
     async parseStatesCases(): Promise<void> {
         const statesCases = await this.getInfoFromRaw(this.config.csvs.states);
-
+        
         for (const covidCase of statesCases) {
-            covidCase.splice(3, 1);
-            await this.storage.query(STATES_SQL, covidCase);
+            if (!covidCase[2].includes('TOTAL', 'total')) {
+                covidCase.splice(3, 1);
+                await this.storage.query(STATES_SQL, covidCase);
+            }
         }
     }
 
     async parseTotalCases(): Promise<void> {
         const totalCases = await this.getInfoFromRaw(this.config.csvs.total);
-        for (const covidCase of totalCases) await this.storage.query(TOTAL_SQL, covidCase);
+        for (const covidCase of totalCases) {
+            if (!covidCase[1].includes('TOTAL', 'total')) {
+                await this.storage.query(TOTAL_SQL, covidCase);
+            }
+        }
     }
 
 }
