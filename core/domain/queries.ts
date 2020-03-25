@@ -1,52 +1,54 @@
 export const STATES_SQL: string =
     `WITH upsert AS (
-        UPDATE Public.statesperday
+        UPDATE Public.casesstateperday
         SET
             newcases = $4, 
             totalcases = $5 
         WHERE
-            statesperday.date = $1 AND
-            statesperday.country = $2 AND
-            statesperday.state = $3
+            casesstateperday.date = $1 AND
+            casesstateperday.country = $2 AND
+            casesstateperday.state_id = (SELECT Id FROM Public.states WHERE abbreviation = $3)
         RETURNING *
     )
-    INSERT INTO PUBLIC.statesperday (
+    INSERT INTO Public.casesstateperday (
         "date", 
         country,
-        state, 
+        state_id, 
         newcases, 
         totalcases
     )
     SELECT
-        $1, $2, $3, $4, $5
+        $1, $2, (SELECT Id FROM Public.states WHERE abbreviation = $3), $4, $5
     WHERE
         NOT EXISTS (SELECT 1 FROM upsert);`;
 
+export const TRUNCATE_CITIES_SQL = 'TRUNCATE Public.casespercity;';
+
 export const CITIES_SQL =
     `WITH upsert AS (
-        UPDATE Public.city 
+        UPDATE Public.casespercity 
         SET
             totalcases = $4
         WHERE
-            city.country = $1 AND
-            city.state = $2 and
-            city.city = $3
+            casespercity.country = $1 AND
+            casespercity.state_id = (SELECT Id FROM Public.states WHERE abbreviation = $2) and
+            casespercity.city like '%$3%'
         RETURNING *
     )
-    INSERT INTO Public.city (
+    INSERT INTO Public.casespercity (
         country, 
-        state, 
+        state_id, 
         city, 
         totalcases 
     ) 
     SELECT
-        $1, $2, $3, $4
+        $1, (SELECT Id FROM Public.states WHERE abbreviation = $2), $3, $4
     WHERE
         NOT EXISTS (SELECT 1 FROM upsert);`;
 
 export const TOTAL_SQL =
     `WITH upsert AS (
-        UPDATE PUBLIC.state
+        UPDATE Public.casesperstate
         SET
             totalcases = $3, 
             totalcasesms = $4, 
@@ -54,12 +56,13 @@ export const TOTAL_SQL =
             deaths = $6, 
             url = $7
         WHERE
-            state.country = $1 and
-            state.state = $2
+            casesperstate.country = $1 and
+            casesperstate.state_id = (SELECT Id FROM Public.states WHERE abbreviation = $2)
         RETURNING *
     )
-    INSERT INTO PUBLIC.state (country, 
-        state, 
+    INSERT INTO Public.casesperstate (
+        country, 
+        state_id, 
         totalcases, 
         totalcasesms, 
         notconfirmedbyms, 
@@ -67,6 +70,6 @@ export const TOTAL_SQL =
         url
     )
     SELECT
-        $1, $2, $3, $4, $5, $6, $7
+        $1, (SELECT Id FROM Public.states WHERE abbreviation = $2), $3, $4, $5, $6, $7
     WHERE
         NOT EXISTS (SELECT 1 FROM upsert);`;
