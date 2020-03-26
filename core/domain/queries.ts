@@ -7,7 +7,7 @@ export const STATES_SQL: string =
         WHERE
             casesstateperday.date = $1 AND
             casesstateperday.country = $2 AND
-            casesstateperday.state_id = (SELECT Id FROM Public.states WHERE abbreviation = $3)
+            casesstateperday.state_id = (SELECT Id FROM Public.State WHERE abbreviation = $3)
         RETURNING *
     )
     INSERT INTO Public.casesstateperday (
@@ -18,7 +18,7 @@ export const STATES_SQL: string =
         totalcases
     )
     SELECT
-        $1, $2, (SELECT Id FROM Public.states WHERE abbreviation = $3), $4, $5
+        $1, $2, (SELECT Id FROM Public.State WHERE abbreviation = $3), $4, $5
     WHERE
         NOT EXISTS (SELECT 1 FROM upsert);`;
 
@@ -31,7 +31,7 @@ export const CITIES_SQL =
             totalcases = $4
         WHERE
             casespercity.country = $1 AND
-            casespercity.state_id = (SELECT Id FROM Public.states WHERE abbreviation = $2) and
+            casespercity.state_id = (SELECT Id FROM Public.State WHERE abbreviation = $2) and
             casespercity.city like '%$3%'
         RETURNING *
     )
@@ -42,7 +42,7 @@ export const CITIES_SQL =
         totalcases 
     ) 
     SELECT
-        $1, (SELECT Id FROM Public.states WHERE abbreviation = $2), $3, $4
+        $1, (SELECT Id FROM Public.State WHERE abbreviation = $2), $3, $4
     WHERE
         NOT EXISTS (SELECT 1 FROM upsert);`;
 
@@ -57,7 +57,7 @@ export const TOTAL_SQL =
             url = $7
         WHERE
             casesperstate.country = $1 and
-            casesperstate.state_id = (SELECT Id FROM Public.states WHERE abbreviation = $2)
+            casesperstate.state_id = (SELECT Id FROM Public.State WHERE abbreviation = $2)
         RETURNING *
     )
     INSERT INTO Public.casesperstate (
@@ -70,6 +70,6 @@ export const TOTAL_SQL =
         url
     )
     SELECT
-        $1, (SELECT Id FROM Public.states WHERE abbreviation = $2), $3, $4, $5, $6, $7
+        $1, (SELECT Id FROM Public.State WHERE abbreviation = $2), $3, $4, $5, $6, $7
     WHERE
         NOT EXISTS (SELECT 1 FROM upsert);`;
