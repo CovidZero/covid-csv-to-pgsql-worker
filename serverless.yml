@@ -15,8 +15,14 @@ package:
 
 provider:
   name: aws
-  # vpc: ${file(./serverless.env.yml):${self:custom.stage}.VPC}
-  region: us-east-1
+  vpc:
+    securityGroupIds:
+      - ${file(./serverless.env.yml):${self:custom.stage}.VPC_SECURITYPRIMARY}
+      - ${file(./serverless.env.yml):${self:custom.stage}.VPC_SECURITYSECONDARY}
+    subnetIds:
+      - ${file(./serverless.env.yml):${self:custom.stage}.VPC_SUBNETPRIMARY}
+      - ${file(./serverless.env.yml):${self:custom.stage}.VPC_SUBNETSECONDARY}
+  region: us-east-2
   runtime: nodejs12.x
   environment:
     ENVIRONMENT: ${file(./serverless.env.yml):${self:custom.stage}.ENVIRONMENT}
