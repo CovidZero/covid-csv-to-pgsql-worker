@@ -16,6 +16,8 @@ package:
 provider:
   name: aws
   vpc:
+    id:
+      - ${file(./serverless.env.yml):${self:custom.stage}.VPC_ID}
     securityGroupIds:
       - ${file(./serverless.env.yml):${self:custom.stage}.VPC_SECURITYPRIMARY}
       - ${file(./serverless.env.yml):${self:custom.stage}.VPC_SECURITYSECONDARY}
