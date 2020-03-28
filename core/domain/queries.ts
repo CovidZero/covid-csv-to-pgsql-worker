@@ -28,7 +28,8 @@ export const CITIES_SQL =
     `WITH upsert AS (
         UPDATE Public.casespercity 
         SET
-            totalcases = $4
+            ibge_id = $4,
+            totalcases = $5
         WHERE
             casespercity.country = $1 AND
             casespercity.state_id = (SELECT Id FROM Public.State WHERE abbreviation = $2) and
@@ -38,11 +39,12 @@ export const CITIES_SQL =
     INSERT INTO Public.casespercity (
         country, 
         state_id, 
-        city, 
+        city,
+        ibge_id, 
         totalcases 
     ) 
     SELECT
-        $1, (SELECT Id FROM Public.State WHERE abbreviation = $2), $3, $4
+        $1, (SELECT Id FROM Public.State WHERE abbreviation = $2), $3, $4, $5
     WHERE
         NOT EXISTS (SELECT 1 FROM upsert);`;
 

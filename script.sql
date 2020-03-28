@@ -7,9 +7,10 @@ CREATE TABLE State (
 );
 
 CREATE TABLE CasesPerCity (
-    id serial primary key,
+  id serial primary key,
 	country varchar,
 	state_id integer references state(id) not null,
+	ibge_id integer,
 	city varchar,
 	totalcases integer
 );
