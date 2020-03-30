@@ -29,7 +29,8 @@ export const CITIES_SQL =
         UPDATE Public.casespercity 
         SET
             ibge_id = $4,
-            totalcases = $5
+            deaths = $5,
+            totalcases = $6
         WHERE
             casespercity.country = $1 AND
             casespercity.state_id = (SELECT Id FROM Public.State WHERE abbreviation = $2) and
@@ -41,10 +42,11 @@ export const CITIES_SQL =
         state_id, 
         city,
         ibge_id, 
-        totalcases 
+        deaths,
+        totalcases
     ) 
     SELECT
-        $1, (SELECT Id FROM Public.State WHERE abbreviation = $2), $3, $4, $5
+        $1, (SELECT Id FROM Public.State WHERE abbreviation = $2), $3, $4, $5, $6
     WHERE
         NOT EXISTS (SELECT 1 FROM upsert);`;
 
