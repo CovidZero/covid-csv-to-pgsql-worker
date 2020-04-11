@@ -2,8 +2,12 @@ export const STATES_SQL: string =
     `WITH upsert AS (
         UPDATE Public.casesstateperday
         SET
-            newcases = $4, 
-            totalcases = $5 
+            newdeaths = $4,	
+            deaths = $5,
+            newcases = $6, 
+            totalcases = $7,
+            deathsms = $8,
+            totalcasesms = $9
         WHERE
             casesstateperday.date = $1 AND
             casesstateperday.country = $2 AND
@@ -14,11 +18,15 @@ export const STATES_SQL: string =
         "date", 
         country,
         state_id, 
+        newdeaths,	
+        deaths,
         newcases, 
-        totalcases
+        totalcases,
+        deathsms,
+        totalcasesms
     )
     SELECT
-        $1, $2, (SELECT Id FROM Public.State WHERE abbreviation = $3), $4, $5
+        $1, $2, (SELECT Id FROM Public.State WHERE abbreviation = $3), $4, $5, $6, $7, $8, $9
     WHERE
         NOT EXISTS (SELECT 1 FROM upsert);`;
 
@@ -57,8 +65,9 @@ export const TOTAL_SQL =
             totalcases = $3, 
             totalcasesms = $4, 
             notconfirmedbyms = $5, 
-            deaths = $6, 
-            url = $7
+            deaths = $6,
+            deathsms = $7,
+            url = $8
         WHERE
             casesperstate.country = $1 and
             casesperstate.state_id = (SELECT Id FROM Public.State WHERE abbreviation = $2)
@@ -70,10 +79,11 @@ export const TOTAL_SQL =
         totalcases, 
         totalcasesms, 
         notconfirmedbyms, 
-        deaths, 
+        deaths,
+        deathsms, 
         url
     )
     SELECT
-        $1, (SELECT Id FROM Public.State WHERE abbreviation = $2), $3, $4, $5, $6, $7
+        $1, (SELECT Id FROM Public.State WHERE abbreviation = $2), $3, $4, $5, $6, $7, $8
     WHERE
         NOT EXISTS (SELECT 1 FROM upsert);`;

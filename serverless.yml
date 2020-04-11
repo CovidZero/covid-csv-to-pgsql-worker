@@ -20,7 +20,6 @@ provider:
       - ${file(./serverless.env.yml):${self:custom.stage}.VPC_ID}
     securityGroupIds:
       - ${file(./serverless.env.yml):${self:custom.stage}.VPC_SECURITYPRIMARY}
-      - ${file(./serverless.env.yml):${self:custom.stage}.VPC_SECURITYSECONDARY}
     subnetIds:
       - ${file(./serverless.env.yml):${self:custom.stage}.VPC_SUBNETPRIMARY}
       - ${file(./serverless.env.yml):${self:custom.stage}.VPC_SUBNETSECONDARY}

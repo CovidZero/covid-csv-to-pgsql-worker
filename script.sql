@@ -12,6 +12,7 @@ CREATE TABLE CasesPerCity (
 	state_id integer references state(id) not null,
 	ibge_id integer,
 	city varchar,
+	deaths integer,
 	totalcases integer
 );
 
@@ -23,16 +24,21 @@ CREATE TABLE CasesPerState (
 	totalcasesms integer,
 	notconfirmedbyms integer,
 	deaths integer,
+	deathsms integer,
 	url varchar
 );
 
 CREATE TABLE CasesStatePerDay (
-    id serial primary key,
+  id serial primary key,
 	"date" date,
 	country varchar,
 	state_id integer references state(id) not null,
+	newdeaths integer,
+	deaths integer,
 	newcases integer,
-	totalcases integer
+	totalcases integer,
+	deathsms integer,
+	totalcasesms integer
 );
 
 INSERT INTO Public.State (abbreviation, name, lng, lat) VALUES ('AC','Acre',-72.13278532,-8.790273369);
